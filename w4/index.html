@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>View Processes</title>
+    </head>
+    <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css">
+    <style>
+        .box{
+          padding: 20px 10px;
+          max-width: 1000px;
+          margin: 0 auto;
+        }
+    </style>
+
+    <body>
+        <div class="table-reponsive box">
+            <table id="process-table" class="table table-striped table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Process ID</th>
+                            <th>File Name</th>
+                            <th>File Path</th>
+                            <th>Description</th>
+                            <th>Start Time</th>
+                            <th>End Time</th>
+                            <th>Time Taken</th>
+                            <th>Percentage</th>
+                        </tr>
+                    </thead>
+                    <tbody id="process-table-body">
+                    </tbody>
+                </table>
+        </div>
+        <script>
+            var urlString = window.location.href;
+            var url = new URL(urlString);
+
+            // Make a websocket connection
+            var ws = new WebSocket(`ws://localhost:8000/ws`);
+
+            // On receiving a message, append it to the unordered list `messages`
+            function processMessage(event) {
+                console.log('Received Data');
+                $('#process-table').DataTable().clear().draw();
+                JSON.parse(event.data).forEach((item, index) => {
+                      addRow(item);
+                });
+            }
+
+
+            // Bind processMessage method defined above to the
+            ws.onmessage = processMessage;
+
+            $(document).ready(function() {
+                $('#process-table').DataTable();
+            });
+
+            function addRow(row){
+                $('#process-table').DataTable().row.add([row.process_id, row.file_name, row.file_path,
+                                                         row.description, row.start_time, row.end_time,
+                                                         row.time_taken, (row.percentage).toFixed(2)]).draw(false);
+            }
+        </script>
+    </body>
+</html>

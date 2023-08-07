@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Chat</title>
+    </head>
+    <body>
+        <h1>WebSocket Chat</h1>
+        <button onClick="showForm(event)" id="connect">Connect</button>
+        <form action="" onsubmit="sendMessage(event)" id="form" style="display: none">
+            <input type="text" id="messageText" autocomplete="off"/>
+            <button>Send</button>
+        </form>
+        <ul id='messages'>
+        </ul>
+        <script>
+            var urlString = window.location.href;
+            var url = new URL(urlString);
+
+            // get roomID from URL parameters
+            var roomID = url.searchParams.get("roomID");
+            console.log(roomID);
+
+            // Assign a clientID
+            var clientID = Date.now();
+            console.log(clientID);
+
+            // Make a websocket connection
+            var ws = new WebSocket(`ws://localhost:8000/ws/${roomID}/${clientID}`);
+
+            // On receiving a message, append it to the unordered list `messages`
+            function processMessage(event) {
+                var messages = document.getElementById('messages')
+                var message = document.createElement('li')
+                var content = document.createTextNode(event.data)
+                message.appendChild(content);
+                messages.appendChild(message);
+            }
+
+            // Bind processMessage method defined above to the
+            ws.onmessage = processMessage;
+
+            // On form submission, send the text that is typed to the websocket connection
+            function sendMessage(event) {
+                var input = document.getElementById("messageText")
+                ws.send(input.value);
+
+                input.value = ''
+                event.preventDefault()
+            }
+
+            function showForm(event) {
+                var button = document.getElementById("connect");
+                var form = document.getElementById("form");
+                button.style.display = "none";
+                form.style.display = "block";
+            }
+
+        </script>
+    </body>
+</html>
