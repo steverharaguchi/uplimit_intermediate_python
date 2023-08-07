@@ -1,4 +1,4 @@
-# Python for Production
+# Intermediate Python
 
 ## Install all dependencies
 
