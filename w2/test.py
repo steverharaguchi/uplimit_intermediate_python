@@ -1,52 +1,69 @@
-import os
-from w3.main import get_sales_information
-from w1.utils import DataReader
-import constants
-from global_utils import blockPrint, enablePrint
+from w2.utils.database import DB
+from w2.utils.response_model import ProcessStatus
+import uuid
+from datetime import datetime
+import time
 from pprint import pprint
 
-CURRENT_FOLDER = os.path.dirname(os.path.abspath(__file__))
+from fastapi.testclient import TestClient
+from w2.server import app
+import unittest
 
 
-def test_data_reader():
-    col_names = [constants.OutDataColNames.STOCK_CODE, constants.OutDataColNames.DESCRIPTION,
-                 constants.OutDataColNames.UNIT_PRICE, constants.OutDataColNames.QUANTITY,
-                 constants.OutDataColNames.TOTAL_PRICE, constants.OutDataColNames.COUNTRY,
-                 constants.OutDataColNames.INVOICE_NO, constants.OutDataColNames.DATE]
+class TestApp(unittest.TestCase):
+    client = TestClient(app)
+    db = DB('db_test.sqlite')
 
-    blockPrint()
-    data_reader = DataReader(fp=os.path.join(CURRENT_FOLDER, '..', 'data', 'tst', '2015.csv'), sep=',',
-                             col_names=col_names)
+    def test_health(self):
+        response = self.client.get("/health")
+        self.assertEqual(response.status_code, 200, msg='Response code should be 200')
+        self.assertEqual(response.json(), {"status": "ok"}, msg='Health API check failed')
 
-    data_gen = (row for row in data_reader)
-    # skipping column names
-    _ = next(data_gen)
+    def test_processes(self):
+        response = self.client.get("/processes")
+        self.assertEqual(response.status_code, 200, msg='Response code should be 200')
+        self.assertTrue(isinstance(response.json(), list), msg='Instance of processes object should be list')
+        if len(response.json()) > 0:
+            self.assertTrue(all([isinstance(process, dict) for process in response.json()]),
+                            msg='Process data type should de dictionary')
 
-    # first row
-    row_1 = next(data_gen)
-    enablePrint()
+            response_model_ex = ProcessStatus(process_id='', file_name='', file_path='',
+                                              description='', start_time='', end_time='',
+                                              percentage=0)
 
-    # check if row is a dict
-    assert isinstance(row_1, dict)
+            self.assertTrue(all([process.keys() == response_model_ex.dict().keys()
+                                 for process in response.json()]), msg='Missing keys')
 
-    # check if the row contains all the required data
-    assert all([(col_name in row_1.keys()) for col_name in col_names])
+    def test_db_operations(self):
 
-    pprint(row_1)
+        example_data = [{
+            'process_id': str(uuid.uuid4()),
+            'start_time': datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S'),
+            'file_name': 'sample_1.csv',
+            'file_path': '/usr/sample_1.csv',
+            'description': 'sample'
+        }, {
+            'process_id': str(uuid.uuid4()),
+            'start_time': datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S'),
+            'file_name': 'sample_2.csv',
+            'file_path': '/usr/sample_2.csv',
+            'description': 'sample'
+        }, {
+            'process_id': str(uuid.uuid4()),
+            'start_time': datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S'),
+            'file_name': 'sample_3.csv',
+            'file_path': '/usr/sample_3.csv',
+            'description': 'sample'
+        }]
+        for each in example_data:
+            self.db.insert(process_id=each['process_id'], start_time=each['start_time'], file_name=each['file_name'],
+                           file_path=each['file_path'], description=each['description'])
 
+        time.sleep(5)
 
-def test_revenue_per_region():
-    blockPrint()
-    data_folder_path = os.path.join(CURRENT_FOLDER, '..', constants.DATA_FOLDER_NAME, 'tst')
-    files = [str(file) for file in os.listdir(data_folder_path) if str(file).endswith('csv')]
+        for each in example_data:
+            self.db.update_end_time(process_id=each['process_id'],
+                                    end_time=datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S'))
 
-    file_paths = [os.path.join(data_folder_path, file_name) for file_name in files]
-    revenue_data = [{'file_path': file_path, 'revenue_data': get_sales_information(file_path)}
-                    for file_path in file_paths]
-    enablePrint()
-
-    assert len(revenue_data) > 0
-    assert all([(True if isinstance(each, dict) else False) for each in revenue_data])
-    assert all([len(each) > 0 for each in revenue_data])
-
-    pprint(revenue_data)
+        records = self.db.read_all()
+        pprint(records)
