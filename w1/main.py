@@ -8,11 +8,16 @@ import argparse
 from global_utils import get_file_name, make_dir, plot_sales_data
 from datetime import datetime
 import json
-
+import logging
 
 CURRENT_FOLDER_NAME = os.path.dirname(os.path.abspath(__file__))
 
-
+"""
+The revenue_per_region function takes an instance of the DataProcessor class 
+as input, reads the data using the data_reader method of DataProcessor, 
+and calculates the aggregate revenue per region. It returns a dictionary 
+with the aggregate revenue per region.
+"""
 def revenue_per_region(dp: DataProcessor) -> Dict:
     """
     Input : object of instance type Class DataProcessor
@@ -43,9 +48,21 @@ def revenue_per_region(dp: DataProcessor) -> Dict:
         'United States': 121.499
     }
     """
-    ######################################## YOUR CODE HERE ##################################################
 
-    ######################################## YOUR CODE HERE ##################################################
+    data_reader = dp.data_reader
+    data_reader_gen = (row for row in data_reader)
+
+    # skip first row as it is the column name
+    _ = next(data_reader_gen)
+
+    aggregate = dict()
+
+    for row in tqdm(data_reader_gen):
+        if row[constants.OutDataColNames.COUNTRY] not in aggregate:
+            aggregate[row[constants.OutDataColNames.COUNTRY]] = 0
+        aggregate[row[constants.OutDataColNames.COUNTRY]] += dp.to_float(row[constants.OutDataColNames.TOTAL_PRICE])
+
+    return aggregate
 
 
 def get_sales_information(file_path: str) -> Dict:
@@ -56,6 +73,15 @@ def get_sales_information(file_path: str) -> Dict:
     dp.describe(column_names=[constants.OutDataColNames.UNIT_PRICE, constants.OutDataColNames.TOTAL_PRICE])
 
     # return total revenue and revenue per region
+    print("########################################################")
+    print("This is the output of get_sales_information:")
+    print({
+        'total_revenue': dp.aggregate(column_name=constants.OutDataColNames.TOTAL_PRICE),
+        'revenue_per_region': revenue_per_region(dp),
+        'file_name': get_file_name(file_path)
+    })
+    print("########################################################")
+    
     return {
         'total_revenue': dp.aggregate(column_name=constants.OutDataColNames.TOTAL_PRICE),
         'revenue_per_region': revenue_per_region(dp),
@@ -63,6 +89,13 @@ def get_sales_information(file_path: str) -> Dict:
     }
 
 
+"""
+The main function parses the command-line arguments using argparse, gets the 
+list of files in the data directory specified by the argument, calls the 
+get_sales_information function on each file, and saves the output as a JSON file 
+in the output directory. It also calls the plot_sales_data function to plot 
+the revenue per region for each file and save the plot as a PNG file in the output directory.
+"""
 def main():
     parser = argparse.ArgumentParser(description="Choose from one of these : [tst|sml|bg]")
     parser.add_argument('--type',
@@ -72,6 +105,7 @@ def main():
     args = parser.parse_args()
 
     data_folder_path = os.path.join(CURRENT_FOLDER_NAME, '..', constants.DATA_FOLDER_NAME, args.type)
+    # list comprehension to get all the csv files in the path
     files = [str(file) for file in os.listdir(data_folder_path) if str(file).endswith('csv')]
 
     output_save_folder = os.path.join(CURRENT_FOLDER_NAME, '..', 'output', args.type,
@@ -94,4 +128,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
