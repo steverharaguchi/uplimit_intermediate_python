@@ -1,5 +1,5 @@
 from w4.logger_config import main_logger
-from w2.utils.database import DB
+from w3.utils.database import DB
 import datetime
 from typing import List, Dict
 from pprint import pprint
