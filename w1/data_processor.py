@@ -4,7 +4,30 @@ from w1.utils import Stats, DataReader
 from tqdm import tqdm
 import os
 
+"""
+This is a class definition of `DataProcessor`. 
+The class takes a file path as input when initializing an object of this class. 
+The object then reads data from the file using a `DataReader` object and 
+stores the column names and separator used in the file. 
+The class also contains two methods, `describe` and `aggregate`.
 
+The `describe` method takes a list of column names as input and calculates 
+summary statistics (mean, standard deviation, minimum, maximum) for each of 
+these columns in the file. The method uses a generator to iterate through the 
+file row by row, skipping the first row (column names). For each row, it updates 
+the summary statistics for each column specified in the input list. 
+The summary statistics are stored in a `Stats` object for each column, 
+which is then stored in a dictionary with the column name as the key.
+
+The `aggregate` method takes a column name as input and calculates the sum of 
+all values in that column in the file. The method also uses a generator to 
+iterate through the file row by row, skipping the first row (column names). 
+For each row, it adds the value in the specified column to a running total. 
+The final total is returned as output.
+
+The code is incomplete as the implementation of the `aggregate` method is missing.
+
+"""
 class DataProcessor:
     def __init__(self, file_path: str) -> None:
         self._fp = file_path
@@ -29,6 +52,7 @@ class DataProcessor:
         # get generator from data_reader
         data_reader_gen = (row for row in self.data_reader)
 
+        # skip first row as it is the column name
         _ = next(data_reader_gen)
 
         for _ in tqdm(data_reader_gen):
@@ -41,14 +65,36 @@ class DataProcessor:
         col_names = first_row.split(self._sep)
         self._col_names = col_names
 
+    """
+    The describe method takes a list of column names as input and calculates 
+    summary statistics (mean, standard deviation, minimum, maximum) for each 
+    of these columns in the file. The method uses a generator to iterate through 
+    the file row by row, skipping the first row (column names). For each row, 
+    it updates the summary statistics for each column specified in the input list. 
+    The summary statistics are stored in a Stats object for each column, which is 
+    then stored in a dictionary with the column name as the key.
+    """
     def describe(self, column_names: List[str]):
-        # get generator from data_reader
+        # get generator from data_reader --- generator comprehension
         data_reader_gen = (row for row in self.data_reader)
 
         # skip first row as it is the column name
         _ = next(data_reader_gen)
 
-        # key is the column name and value is the stats object
+        
+        # This line of code creates a dictionary called stats where the keys are 
+        # the column names provided in the column_names list, and the values are 
+        # instances of the Stats class.
+
+        # Specifically, it uses a dictionary comprehension to create the dictionary. 
+        # For each column name in column_names, it creates a key-value pair where 
+        # the key is the column name and the value is an instance of the Stats class 
+        # created by calling the class constructor Stats().
+        
+        # In summary, this line of code initializes a dictionary where the keys are 
+        # the column names and the values are empty Stats objects. These Stats objects 
+        # will later be updated with statistical information for each column using 
+        # the update_stats method.
         stats = {name: Stats() for name in column_names}
 
         # update stats as we iterate through the file
@@ -61,6 +107,14 @@ class DataProcessor:
             pprint(column_name)
             pprint(value.get_stats())
 
+    """
+    The aggregate method takes a column name as input and calculates the sum 
+    of all values in that column in the file. The method also uses a generator 
+    to iterate through the file row by row, skipping the first row (column names). 
+    For each row, it adds the value in the specified column to a running total. 
+    The final total is returned as output.
+
+    """
     def aggregate(self, column_name: str) -> float:
         """
         Input : List[str]
@@ -78,6 +132,16 @@ class DataProcessor:
 
         aggregate should be 105.58
         """
-        ######################################## YOUR CODE HERE ##################################################
+        # get generator from data_reader
+        data_reader_gen = (row for row in self.data_reader)
 
-        ######################################## YOUR CODE HERE ##################################################
+        # skip first row as it is the column name
+        _ = next(data_reader_gen)
+
+        aggregate = 0
+
+        for row in tqdm(data_reader_gen):
+            if self.to_float(row[column_name]):
+                aggregate += self.to_float(row[column_name])
+
+        return aggregate
