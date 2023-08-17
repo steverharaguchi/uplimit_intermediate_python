@@ -4,10 +4,10 @@ from pprint import pprint
 from w1.utils import Stats
 from tqdm import tqdm
 import os
-from w2.utils.database import DB
+from w3.utils.database import DB
 import uuid
 import inspect
-from w1.data_processor import DataProcessor
+from w3.data_processor import DataProcessor
 import argparse
 from global_utils import make_dir,  plot_sales_data, get_file_name
 import json
