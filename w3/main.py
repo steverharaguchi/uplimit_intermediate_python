@@ -7,7 +7,7 @@ import os
 from w3.utils.database import DB
 import uuid
 import inspect
-from w3.data_processor import DataProcessor
+from w1.data_processor import DataProcessor
 import argparse
 from global_utils import make_dir,  plot_sales_data, get_file_name
 import json
