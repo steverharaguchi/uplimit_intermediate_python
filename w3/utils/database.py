@@ -44,9 +44,10 @@ class DB:
 
         Read more about datatypes in Sqlite here -> https://www.sqlite.org/datatype3.html
         """
-    ######################################## YOUR CODE HERE ##################################################
-
-    ######################################## YOUR CODE HERE ##################################################
+        self._connection.execute(f'''CREATE TABLE IF NOT EXISTS 
+        {self._table_name}(process_id TEXT NOT NULL, file_name TEXT DEFAULT NULL, 
+                  file_path TEXT DEFAULT NULL, description TEXT DEFAULT NULL, 
+                  start_time TEXT NOT NULL, end_time TEXT DEFAULT NULL, percentage REAL DEFAULT NULL);''')
 
     def insert(self, process_id, start_time, file_name=None, file_path=None,
                description=None, end_time=None, percentage=None) -> None:
@@ -62,9 +63,39 @@ class DB:
         :param percentage: Percentage of process completed
         :return: None
         """
-    ######################################## YOUR CODE HERE ##################################################
+        columns_to_insert = ['process_id', 'start_time']
+        values = ["'"+process_id+"'", "'"+start_time+"'"]
 
-    ######################################## YOUR CODE HERE ##################################################
+        if end_time is not None:
+            columns_to_insert.append('end_time')
+            values.append("'"+end_time+"'")
+
+        if file_name is not None:
+            columns_to_insert.append('file_name')
+            values.append("'"+file_name+"'")
+
+        if file_path is not None:
+            columns_to_insert.append('file_path')
+            values.append("'"+file_path+"'")
+
+        if description is not None:
+            columns_to_insert.append('description')
+            values.append("'"+description+"'")
+
+        if description is not None:
+            columns_to_insert.append('description')
+            values.append("'"+description+"'")
+
+        if percentage is not None:
+            columns_to_insert.append('percentage')
+            values.append("'" + percentage + "'")
+
+        # building the query
+        self._connection.execute(f'''INSERT INTO {self._table_name}({",".join(columns_to_insert)}) 
+                                                VALUES({",".join(values)});''')
+
+        # commit changes to the database
+        self._connection.commit()
 
     def read_all(self) -> List[Dict]:
         data = []
@@ -94,8 +125,9 @@ class DB:
         :param percentage: Percentage of process completed
         :return: None
         """
-    ######################################## YOUR CODE HERE ##################################################
+        self._connection.execute(f'''UPDATE {self._table_name} SET percentage={percentage}
+                                     WHERE process_id='{process_id}';''')
 
-    ######################################## YOUR CODE HERE ##################################################
+        self._connection.commit()
 
 
