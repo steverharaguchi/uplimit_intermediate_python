@@ -1,5 +1,5 @@
 import os
-from w3.main import get_sales_information
+from w2.main import get_sales_information
 from w1.utils import DataReader
 import constants
 from global_utils import blockPrint, enablePrint
