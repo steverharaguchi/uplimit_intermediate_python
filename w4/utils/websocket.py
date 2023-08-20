@@ -2,7 +2,7 @@ from w4.logger_config import server_logger
 from typing import List
 from starlette.websockets import WebSocket, WebSocketState
 import time
-from w2.utils.database import DB
+from w3.utils.database import DB
 
 
 class ConnectionManager:
