@@ -4,7 +4,7 @@ from pprint import pprint
 from w1.utils import Stats
 from tqdm import tqdm
 import os
-from w2.utils.database import DB
+from w3.utils.database import DB
 import uuid
 import inspect
 from w1.data_processor import DataProcessor
