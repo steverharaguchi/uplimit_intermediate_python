@@ -6,8 +6,8 @@ from threading import Thread
 import asyncio
 from starlette.websockets import WebSocket
 from w4.utils.websocket import ConnectionManager
-from w2.utils.response_model import ProcessStatus
-from w2.utils.database import DB
+from w3.utils.response_model import ProcessStatus
+from w3.utils.database import DB
 
 app = FastAPI()
 manager = ConnectionManager()
