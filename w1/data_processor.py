@@ -78,7 +78,7 @@ class DataProcessor:
 
         aggregate should be 105.58
         """
-        ######################################## YOUR CODE HERE ##################################################
+       
         # get generator from data_reader
         data_reader_gen = (row for row in self.data_reader) #### [YOUR CODE HERE] ####
 
@@ -86,11 +86,11 @@ class DataProcessor:
         _ = next(data_reader_gen)
 
         # initialize aggreate value
-        aggregate = 0#### [YOUR CODE HERE] ####
+        aggregate = 0.0
 
         for row in tqdm(data_reader_gen):
             if self.to_float(row[column_name]):
-                aggregate += row[column_name]#### [YOUR CODE HERE] ####
+                aggregate += self.to_float(row[column_name])#### [YOUR CODE HERE] ####
 
         return aggregate
-        ######################################## YOUR CODE HERE ##################################################
+       

@@ -59,7 +59,6 @@ class Stats:
             self._max = val
 
     def calculate_mean(self) -> None:
-        print(self._vals)
         self._mean = sum(self._vals) / len(self._vals)
 
     def calculate_std(self) -> None:
@@ -112,7 +111,7 @@ class DataReader:
             'Country': 'Russia',
         }
         """
-    ######################################## YOUR CODE HERE ##################################################
+   
         # output generator -- use 'yield' keyword 
         # generate each row: dictionary comprehension
         
@@ -122,13 +121,11 @@ class DataReader:
             # define the row_vals dictionary 
             row_vals = {self._col_names[i]: row_vals[i] for i in range(len(self._col_names))}
             row_vals['n_row'] = n_row
-
-   
-
             # return results: 
-        yield row_vals
+            yield row_vals
+        
     
-    ######################################## YOUR CODE HERE ##################################################
+   
 
     def get_file_path(self):
         return self._fp

@@ -43,7 +43,7 @@ def revenue_per_region(dp: DataProcessor) -> Dict:
         'United States': 121.499
     }
     """
-    ######################################## YOUR CODE HERE ##################################################
+  
     data_reader =  dp.data_reader
     data_reader_gen = (row for row in data_reader)
 
@@ -54,12 +54,13 @@ def revenue_per_region(dp: DataProcessor) -> Dict:
     aggregate = dict()
 
     for row in tqdm(data_reader_gen):
+        val = dp.to_float(row[constants.OutDataColNames.TOTAL_PRICE])
         if row[constants.OutDataColNames.COUNTRY] not in aggregate:
-            aggregate[row[constants.OutDataColNames.COUNTRY]] = row[constants.OutDataColNames.TOTAL_PRICE]
-        aggregate[row[constants.OutDataColNames.COUNTRY]] +=  row[constants.OutDataColNames.TOTAL_PRICE]
+            aggregate[row[constants.OutDataColNames.COUNTRY]] = val
+        aggregate[row[constants.OutDataColNames.COUNTRY]] +=  val
 
     return aggregate
-    ######################################## YOUR CODE HERE ##################################################
+
 
 
 def get_sales_information(file_path: str) -> Dict:
