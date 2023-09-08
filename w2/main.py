@@ -164,14 +164,21 @@ def main() -> List[Dict]:
     batches = batch_files(file_paths=file_paths, n_processes=n_processes)
 
     ######################################## YOUR CODE HERE ##################################################
-
+    with multiprocessing.Pool(processes=n_processes) as pool:
+        
     ######################################## YOUR CODE HERE ##################################################
 
     en = time.time()
     print("Overall time taken : {}".format(en-st))
 
+    ######################################## YOUR CODE HERE ##################################################
+    for yearly_data in revenue_data:
+        
+
+    ######################################## YOUR CODE HERE ##################################################
+        
     # should return revenue data
-    return [{}]
+    return #### [YOUR CODE HERE] ####
 
 
 if __name__ == '__main__':
