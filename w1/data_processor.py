@@ -63,10 +63,10 @@ class DataProcessor:
 
     def aggregate(self, column_name: str) -> float:
         """
-        Input : List[str]
-        Output : Dict
+        Input : str
+        Output : float
 
-        This method should use the generator method assigned to seld.data_reader and return aggregate
+        This method should use the generator method assigned to self.data_reader and return aggregate
         of the column mentioned in the `column_name` variable
 
         For example if the `column_name` -> 'TotalPrice' and the file format is as below:
@@ -80,17 +80,17 @@ class DataProcessor:
         """
         ######################################## YOUR CODE HERE ##################################################
         # get generator from data_reader
-        data_reader_gen = #### [YOUR CODE HERE] ####
+        data_reader_gen = (row for row in self.data_reader)
 
         # skip first row as it is the column name
         _ = next(data_reader_gen)
 
         # initialize aggreate value
-        aggregate = #### [YOUR CODE HERE] ####
+        aggregate = 0
 
         for row in tqdm(data_reader_gen):
             if self.to_float(row[column_name]):
-                aggregate += #### [YOUR CODE HERE] ####
+                aggregate += self.to_float(row[column_name])
 
         return aggregate
         ######################################## YOUR CODE HERE ##################################################
