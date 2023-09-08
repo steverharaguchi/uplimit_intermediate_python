@@ -54,8 +54,8 @@ def revenue_per_region(dp: DataProcessor) -> Dict:
 
     for row in tqdm(data_reader_gen):
         if row[constants.OutDataColNames.COUNTRY] not in aggregate:
-            aggregate[row[constants.OutDataColNames.COUNTRY]] = 0
-            aggregate[row[constants.OutDataColNames.COUNTRY]] += dp.aggregate(column_name=constants.OutDataColNames.TOTAL_PRICE)
+            aggregate[row['Country']] = 0
+        aggregate[row['Country']] += dp.aggregate(column_name=constants.OutDataColNames.TOTAL_PRICE)
 
     return aggregate
     # ######################################## YOUR CODE HERE ##################################################
