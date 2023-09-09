@@ -122,7 +122,7 @@ class DataReader:
             row_vals['n_row'] = n_row
 
             # return results:
-            yield row_vals  
+            yield row_vals 
     ######################################## YOUR CODE HERE ##################################################
 
     def get_file_path(self):
@@ -130,4 +130,3 @@ class DataReader:
 
     def get_column_names(self):
         return self._col_names
-
