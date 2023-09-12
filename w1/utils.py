@@ -111,7 +111,7 @@ class DataReader:
             'Country': 'Russia',
         }
         """
-    ######################################## YOUR CODE HERE ##################################################
+   
         # output generator -- use 'yield' keyword 
         # generate each row: dictionary comprehension
         
@@ -119,13 +119,13 @@ class DataReader:
             row_vals = row.strip('\n').split(self._sep)
             
             # define the row_vals dictionary 
-            row_vals = #### [YOUR CODE HERE] ####
-            row_vals['n_row'] = #### [YOUR CODE HERE] ####
-
+            row_vals = {self._col_names[i]: row_vals[i] for i in range(len(self._col_names))}
+            row_vals['n_row'] = n_row
             # return results: 
-            #### [YOUR CODE HERE] ####
+            yield row_vals
+        
     
-    ######################################## YOUR CODE HERE ##################################################
+   
 
     def get_file_path(self):
         return self._fp
