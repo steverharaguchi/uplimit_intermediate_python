@@ -63,9 +63,9 @@ def get_sales_information(file_path: str) -> Dict:
 # batches the files based on the number of processes
 def batch_files(file_paths: List[str], n_processes: int) -> List[set]:
     if n_processes > len(file_paths):
-        return file_paths#### [YOUR CODE HERE] ####
+        return []#### [YOUR CODE HERE] ####
 
-    n_per_batch = 3#### [YOUR CODE HERE] ####
+    n_per_batch = len(file_paths) // n_processes#### [YOUR CODE HERE] ####
 
     first_set_len = n_processes * n_per_batch
     first_set = file_paths[0:first_set_len]
@@ -74,7 +74,7 @@ def batch_files(file_paths: List[str], n_processes: int) -> List[set]:
     batches = [set(file_paths[i:i + n_per_batch]) for i in range(0, len(first_set), n_per_batch)]
     for ind, each_file in enumerate(second_set):
         #### [YOUR CODE HERE] ####
-        batches[ind % n_processes].add(each_file)
+        batches[ind].add(each_file)
 
     return batches
 
@@ -165,9 +165,11 @@ def main() -> List[Dict]:
     batches = batch_files(file_paths=file_paths, n_processes=n_processes)
 
     ######################################## YOUR CODE HERE ##################################################
-    revenue_data = []
+
     with multiprocessing.Pool(processes=n_processes) as pool:
-        revenue_data = pool.starmap(run, [(batch, ind) for ind, batch in enumerate(batches)])
+        revenue_data = pool.starmap(run, [(batch, n_process) for n_process, batch in enumerate(batches)])
+        revenue_data = flatten(revenue_data)
+
         
         
     ######################################## YOUR CODE HERE ##################################################
@@ -177,7 +179,9 @@ def main() -> List[Dict]:
 
     ######################################## YOUR CODE HERE ##################################################
     for yearly_data in revenue_data:
-        plot_sales_data(yearly_data)
+        with(open()) as f:
+
+
         
 
     ######################################## YOUR CODE HERE ##################################################
