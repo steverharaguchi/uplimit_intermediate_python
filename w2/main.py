@@ -165,10 +165,17 @@ def main() -> List[Dict]:
 
     ######################################## YOUR CODE HERE ##################################################
     with multiprocessing.Pool(processes=n_processes) as pool:
-        revenue_results = pool.starmap(run, [(batch, n_process) for n_process, batch in enumerate(batches)] )
+        revenue_results = pool.starmap(run, [(batch, i) for i, batch in enumerate(batches)] )
         revenue_results = flatten(revenue_results)
         pool.close()
         pool.join()
+
+
+    for yearly_data in revenue_results:
+        with open(os.path.join(output_save_folder, f'{yearly_data["file_name"]}.json'), 'w') as f:
+            f.write(json.dumps(yearly_data))
+        plot_sales_data(yearly_revenue=yearly_data['revenue_per_region'], year=yearly_data["file_name"],
+                     plot_save_path=os.path.join(output_save_folder, f'{yearly_data["file_name"]}.png'))
     ######################################## YOUR CODE HERE ##################################################
 
     en = time.time()
