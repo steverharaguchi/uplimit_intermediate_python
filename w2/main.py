@@ -63,7 +63,7 @@ def get_sales_information(file_path: str) -> Dict:
 # batches the files based on the number of processes
 def batch_files(file_paths: List[str], n_processes: int) -> List[set]:
     if n_processes > len(file_paths):
-        return []#### [YOUR CODE HERE] ####
+        return []
 
     n_per_batch = len(file_paths) // n_processes#### [YOUR CODE HERE] ####
 
@@ -73,7 +73,7 @@ def batch_files(file_paths: List[str], n_processes: int) -> List[set]:
 
     batches = [set(file_paths[i:i + n_per_batch]) for i in range(0, len(first_set), n_per_batch)]
     for ind, each_file in enumerate(second_set):
-        #### [YOUR CODE HERE] ####
+      
         batches[ind].add(each_file)
 
     return batches
