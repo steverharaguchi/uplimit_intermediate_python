@@ -6,7 +6,7 @@
 - Install all the modules
 
 ```
-pip install -r requrirements.txt
+pip install -r requirements.txt
 ```
 
 ## Generate data
