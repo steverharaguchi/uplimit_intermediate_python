@@ -99,3 +99,4 @@ if __name__ == '__main__':
     dp = DataProcessor(fp)
 
     print(dp.aggregate('TotalPrice'))
+    
