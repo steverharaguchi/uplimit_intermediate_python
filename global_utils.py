@@ -49,7 +49,8 @@ def plot_sales_data(yearly_revenue, year, plot_save_path):
     plt.title(f'Revenue Per Country {year}', fontsize=14)
     plt.xlabel('Country', fontsize=14)
     plt.ylabel('Revenue (Dollars)', fontsize=14)
-
+    plt.xticks(rotation=45)
+    
     plt.savefig(plot_save_path, bbox_inches='tight')
 
     plt.close()
