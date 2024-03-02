@@ -54,5 +54,3 @@ def plot_sales_data(yearly_revenue, year, plot_save_path):
     plt.savefig(plot_save_path, bbox_inches='tight')
 
     plt.close()
-
-
